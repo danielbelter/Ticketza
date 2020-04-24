@@ -2,24 +2,26 @@
 using System.Threading.Tasks;
 using Evento.Infrastructure.Commands.User;
 using Evento.Infrastructure.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Evento.Controllers
 {
     [ApiController]
-    public class AccountController : Controller
+    public class AccountController : ApiControllerBase
     {
-        private readonly IUserService userService;
+        private readonly IUserService _userService;
 
         public AccountController(IUserService userService)
         {
-            this.userService = userService;
+            this._userService = userService;
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Get()
         {
-            throw new NotImplementedException();
+            return Json(await _userService.GetAccountAsync(UserId));
         }
 
         [HttpGet("tickets")]
@@ -31,15 +33,15 @@ namespace Evento.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(Register register)
         {
-            await userService.RegisterAsync(Guid.NewGuid(), register.Email, register.Name,
+            await _userService.RegisterAsync(Guid.NewGuid(), register.Email, register.Name,
                 register.Password, register.Role);
             return Created("/account", null);
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login()
+        public async Task<IActionResult> Login(Login login)
         {
-            throw new NotImplementedException();
+            return Json(await _userService.LoginAsync(login.Email, login.Password));
         }
     }
 }
