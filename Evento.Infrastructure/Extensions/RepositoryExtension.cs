@@ -19,5 +19,16 @@ namespace Evento.Infrastructure.Extensions
 
             return eventEntity;
         }
+
+        public static async Task<User> GetOrFailAsync(this IUserRepository repository, Guid id)
+        {
+            var user = await repository.GetUserById(id);
+            if (user == null)
+            {
+                throw new Exception($"User with id: '{id}' does not exist.");
+            }
+
+            return user;
+        }
     }
 }
