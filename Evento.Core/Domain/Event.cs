@@ -15,7 +15,7 @@ namespace Evento.Core.Domain
         public DateTime EndDate { get; protected set; }
         public DateTime UpdatedAt { get; protected set; }
         public IEnumerable<Ticket> Tickets => _tickets;
-        public IEnumerable<Ticket> PurchasedTickets => _tickets.Where(x =>x.Purchased);
+        public IEnumerable<Ticket> PurchasedTickets => _tickets.Where(x => x.Purchased);
         public IEnumerable<Ticket> AvailableTickets => _tickets.Where(x => !x.Purchased);
 
         protected Event()
@@ -48,6 +48,7 @@ namespace Evento.Core.Domain
             {
                 throw new Exception($"Event with id: '{Id}' can not have an empty name.");
             }
+
             Name = name;
             UpdatedAt = DateTime.UtcNow;
         }
@@ -58,8 +59,42 @@ namespace Evento.Core.Domain
             {
                 throw new Exception($"Event with id: '{Id}' can not have an empty description.");
             }
+
             Description = description;
             UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void PurchaseTickets(User user, int amount)
+        {
+            if (AvailableTickets.Count() < amount)
+            {
+                throw new Exception("Not enough available tickets to purchase");
+            }
+
+            var tickets = AvailableTickets.Take(amount);
+            foreach (var ticket in tickets)
+            {
+                ticket.Purchase(user);
+            }
+        }
+
+        public void CancelPurchasedTickets(User user, int amount)
+        {
+            var tickets = GetTicketsPurchasedByUser(user);
+            if (tickets.Count() < amount)
+            {
+                throw new Exception("not enough purchased ticket to be canceled");
+            }
+
+            foreach (var ticket in tickets.Take(amount))
+            {
+                ticket.Cancel();
+            }
+        }
+
+        public IEnumerable<Ticket> GetTicketsPurchasedByUser(User user)
+        {
+            return PurchasedTickets.Where(x => x.UserId == user.Id);
         }
     }
 }
