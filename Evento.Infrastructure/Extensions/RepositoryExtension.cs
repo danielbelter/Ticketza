@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Evento.Core.Domain;
@@ -30,5 +31,19 @@ namespace Evento.Infrastructure.Extensions
 
             return user;
         }
+
+        public static async Task<Event> GetTicketOrFailAsync(this IEventRepository repository, Guid eventId, Guid ticketId)
+        {
+            var eventEntity = await repository.GetOrFailAsync(eventId);
+            var ticket = eventEntity.Tickets.SingleOrDefault(x => x.Id == ticketId);
+
+            if (ticket == null)
+            {
+                throw new Exception($"Ticket with id: '{ticket}' was not found for {eventEntity.Name}");
+            }
+
+            return eventEntity;
+        }
+
     }
 }

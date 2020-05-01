@@ -11,7 +11,7 @@ namespace Evento.Core.Repositories
     {
         Task<Event> GetEventById(Guid id);
         Task<Event> GetEventByName(string name);
-        Task<IEnumerable> BrowseBy(string name = "");
+        Task<IEnumerable<Event>> BrowseBy(string name = "");
         Task AddEvent(Event eventEntity);
         Task UpdateEvent(Event eventEntity);
         Task DeleteEvent(Event eventEntity);

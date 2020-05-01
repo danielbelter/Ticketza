@@ -24,5 +24,29 @@ namespace Evento.Core.Domain
             Seating = seating;
             Price = price;
         }
+
+        public void Purchase(User user)
+        {
+            if (Purchased)
+            {
+                throw new Exception("Ticket was already purchased.");
+            }
+
+            UserId = user.Id;
+            Username = user.Name;
+            PurchasedAt = DateTime.UtcNow;
+        }
+
+        public void Cancel()
+        {
+            if (!Purchased)
+            {
+                throw new Exception("Ticket was not purchased.");
+            }
+
+            UserId = null;
+            Username = null;
+            PurchasedAt = null;
+        }
     }
 }
