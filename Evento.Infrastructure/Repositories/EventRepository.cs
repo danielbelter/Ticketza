@@ -27,7 +27,7 @@ namespace Evento.Infrastructure.Repositories
                 x.Name.ToLowerInvariant() == name.ToLowerInvariant()));
         }
 
-        public async Task<IEnumerable> BrowseBy(string name = "")
+        public async Task<IEnumerable<Event>> BrowseBy(string name = "")
         {
             var events = _events.AsEnumerable();
             if (!string.IsNullOrWhiteSpace(name))

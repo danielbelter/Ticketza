@@ -15,7 +15,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using NLog.Extensions.Logging;
+using NLog.Web;
 
 namespace Evento
 {
@@ -42,7 +45,7 @@ namespace Evento
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("secu_super_key_111!"))
                     };
                 });
-            
+
             services.AddControllers();
             services.AddAuthorization(x => x.AddPolicy("HasAdminRole", p => p.RequireRole("admin")));
             services.AddScoped<IEventRepository, EventRepository>();
@@ -62,7 +65,6 @@ namespace Evento
             {
                 app.UseDeveloperExceptionPage();
             }
-
             app.UseHttpsRedirection();
 
             app.UseRouting();
